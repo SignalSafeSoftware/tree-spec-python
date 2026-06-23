@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "signalsafe-tree-spec"
+description = "SignalSafe TreeSpec wire contract for Python: models, parsing, lint, and patch helpers."
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+license = { text = "UNLICENSED" }
+authors = [
+    { name = "Josh Martin" }
+]
+dynamic = ["version"]
+dependencies = [
+    "pydantic>=2.11.3,<3"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "build>=1.2",
+    "twine>=6.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/SignalSafeSoftware/tree-spec"
+Repository = "https://github.com/SignalSafeSoftware/tree-spec"
+Issues = "https://github.com/SignalSafeSoftware/tree-spec/issues"
+
+[tool.setuptools]
+packages = ["deliveryplus_tree_spec"]
+include-package-data = true
+
+[tool.setuptools.package-dir]
+deliveryplus_tree_spec = "."
+
+[tool.setuptools.dynamic]
+version = { file = ["VERSION"] }
+
+[tool.setuptools.package-data]
+deliveryplus_tree_spec = ["py.typed", "VERSION"]
