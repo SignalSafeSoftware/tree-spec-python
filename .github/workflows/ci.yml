@@ -48,7 +48,7 @@ jobs:
 
             - name: Bandit
               if: matrix.python-version == '3.12'
-              run: uv run bandit -r . -q -x ./tests
+              run: uv run bandit -r . -q -x ./tests,./.venv
 
     tests:
         name: Tests (Python ${{ matrix.python-version }})
