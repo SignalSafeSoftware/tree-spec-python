@@ -37,6 +37,7 @@ jobs:
 
             - name: Install package and tooling
               run: |
+                  uv venv
                   uv export --extra dev --frozen --no-emit-project -o requirements-dev.txt
                   uv pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
                   uv sync --extra dev --frozen
@@ -73,6 +74,7 @@ jobs:
 
             - name: Install package and tooling
               run: |
+                  uv venv
                   uv export --extra dev --frozen --no-emit-project -o requirements-dev.txt
                   uv pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
                   uv sync --extra dev --frozen
@@ -157,6 +159,7 @@ jobs:
 
             - name: Build distributions
               run: |
+                  uv venv
                   uv export --extra dev --frozen --no-emit-project -o requirements-dev.txt
                   uv pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
                   uv sync --extra dev --frozen
