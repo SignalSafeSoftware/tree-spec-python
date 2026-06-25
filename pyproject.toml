@@ -44,5 +44,17 @@ version = { file = ["VERSION"] }
 [tool.setuptools.package-data]
 deliveryplus_tree_spec = ["py.typed", "VERSION"]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=deliveryplus_tree_spec --cov-report=term-missing --cov-fail-under=100"
+
+[tool.coverage.run]
+source = ["deliveryplus_tree_spec"]
+branch = false
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+
 [tool.uv]
 package = true
