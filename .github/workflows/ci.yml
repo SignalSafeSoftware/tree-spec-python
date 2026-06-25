@@ -83,7 +83,7 @@ jobs:
                   .venv/bin/python -m pip install --no-deps -e .
 
             - name: Pytest with coverage
-              run: .venv/bin/python -m pytest -q --cov=deliveryplus_tree_spec --cov-report=xml
+              run: .venv/bin/python -m pytest -q --cov-report=xml
 
             - name: Upload coverage
               if: matrix.python-version == '3.12'
