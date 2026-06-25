@@ -37,10 +37,10 @@ jobs:
 
             - name: Install package and tooling
               run: |
-                  uv venv
+                  uv venv --seed
                   uv export --extra dev --frozen --no-emit-project -o requirements-dev.txt
-                  uv pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
-                  uv pip install --no-deps -e .
+                  .venv/bin/python -m pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
+                  .venv/bin/python -m pip install --no-deps -e .
 
             - name: Flake8
               if: matrix.python-version == '3.12'
@@ -74,10 +74,10 @@ jobs:
 
             - name: Install package and tooling
               run: |
-                  uv venv
+                  uv venv --seed
                   uv export --extra dev --frozen --no-emit-project -o requirements-dev.txt
-                  uv pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
-                  uv pip install --no-deps -e .
+                  .venv/bin/python -m pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
+                  .venv/bin/python -m pip install --no-deps -e .
 
             - name: Pytest with coverage
               run: .venv/bin/python -m pytest -q --cov=deliveryplus_tree_spec --cov-report=xml
@@ -159,10 +159,9 @@ jobs:
 
             - name: Build distributions
               run: |
-                  uv venv
+                  uv venv --seed
                   uv export --extra dev --frozen --no-emit-project -o requirements-dev.txt
-                  uv pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
-                  uv pip install --no-deps -e .
+                  .venv/bin/python -m pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
                   .venv/bin/python -m build
                   .venv/bin/twine check dist/*
 
