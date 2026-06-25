@@ -126,3 +126,22 @@ def test_apply_patch_to_spec_dict_rejects_invalid_patch_shape() -> None:
         apply_patch_to_spec_dict(base_spec, {"replace": [{"match": {}, "set": {}}]})
 
     assert exc_info.value.field == "patch"
+
+
+def test_apply_patch_to_spec_dict_raises_when_dump_not_mapping(monkeypatch) -> None:
+    base_spec = {
+        "start_node": "s",
+        "nodes": {"s": {"type": "prompt", "prompt": "Hi", "choices": []}},
+        "transitions": [],
+    }
+
+    def bad_dump(*_args, **_kwargs):
+        return "not-a-dict"
+
+    monkeypatch.setattr(TreeSpec, "model_dump", bad_dump)
+
+    with pytest.raises(PatchApplyError) as exc_info:
+        apply_patch_to_spec_dict(base_spec, {})
+
+    assert exc_info.value.field == "tree_spec"
+    assert "Internal error" in exc_info.value.message

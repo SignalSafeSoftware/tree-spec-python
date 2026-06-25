@@ -12,6 +12,9 @@ concurrency:
     group: ci-${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
 
+permissions:
+    contents: read
+
 jobs:
     checks:
         name: Checks (Python ${{ matrix.python-version }})
@@ -36,15 +39,19 @@ jobs:
                   enable-cache: true
 
             - name: Install package and tooling
-              run: uv sync --extra dev --frozen
+              run: |
+                  uv venv --seed
+                  uv export --extra dev --frozen --no-emit-project -o requirements-dev.txt
+                  .venv/bin/python -m pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
+                  .venv/bin/python -m pip install --no-deps -e .
 
             - name: Flake8
               if: matrix.python-version == '3.12'
-              run: uv run flake8 __init__.py builder.py constants.py lint.py models.py patch.py tests --max-line-length=120 --extend-ignore=E203,W503
+              run: .venv/bin/flake8 __init__.py builder.py constants.py lint.py models.py patch.py tests --max-line-length=120 --extend-ignore=E203,W503
 
             - name: Bandit
               if: matrix.python-version == '3.12'
-              run: uv run bandit -r . -q -x ./tests
+              run: .venv/bin/bandit -r . -q -x ./tests,./.venv
 
     tests:
         name: Tests (Python ${{ matrix.python-version }})
@@ -69,10 +76,14 @@ jobs:
                   enable-cache: true
 
             - name: Install package and tooling
-              run: uv sync --extra dev --frozen
+              run: |
+                  uv venv --seed
+                  uv export --extra dev --frozen --no-emit-project -o requirements-dev.txt
+                  .venv/bin/python -m pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
+                  .venv/bin/python -m pip install --no-deps -e .
 
             - name: Pytest with coverage
-              run: uv run python -m pytest -q --cov=deliveryplus_tree_spec --cov-report=xml
+              run: .venv/bin/python -m pytest -q --cov-report=xml
 
             - name: Upload coverage
               if: matrix.python-version == '3.12'
@@ -151,9 +162,11 @@ jobs:
 
             - name: Build distributions
               run: |
-                  uv sync --extra dev --frozen
-                  uv run python -m build
-                  uv run twine check dist/*
+                  uv venv --seed
+                  uv export --extra dev --frozen --no-emit-project -o requirements-dev.txt
+                  .venv/bin/python -m pip install --require-hashes --only-binary :all: --no-deps -r requirements-dev.txt
+                  .venv/bin/python -m build
+                  .venv/bin/twine check dist/*
 
             - name: Publish to PyPI
               uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
