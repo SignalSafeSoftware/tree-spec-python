@@ -37,7 +37,7 @@ A license decision and a committed **`LICENSE`** file are required before taggin
    uv run twine check dist/*
    ```
 
-5. **Future required gate (not yet in CI):** install the wheel in a clean venv and smoke-test documented imports (Batch 6).
+5. Run artifact smoke test: `uv run python scripts/smoke_package.py` (build, `twine check`, wheel install, import/`py.typed` checks — enforced in CI before publish).
 
 ## Publish
 
@@ -64,7 +64,7 @@ A license decision and a committed **`LICENSE`** file are required before taggin
 pip index versions signalsafe-tree-spec
 ```
 
-Wheel install smoke tests are planned but not yet required in CI (Batch 6).
+CI runs `scripts/smoke_package.py` before publish (publishing remains blocked until license is resolved).
 
 ## One-time PyPI setup
 
