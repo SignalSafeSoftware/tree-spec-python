@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `SECURITY.md`, Dependabot, standalone README, `CHANGELOG.md`, updated [RELEASING.md](./RELEASING.md).
+- TreeSpec parity fixtures test suite.
+- Expanded unit test coverage.
+- Package artifact smoke test (`scripts/smoke_package.py`).
 
 ### Changed
 
