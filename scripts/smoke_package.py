@@ -5,7 +5,8 @@ from __future__ import annotations
 
 import importlib
 import shutil
-import subprocess
+# Bandit: subprocess is required for this trusted packaging smoke script (fixed argv lists only).
+import subprocess  # nosec B404
 import sys
 import tempfile
 import zipfile
@@ -28,7 +29,8 @@ TYPED_PACKAGE = "deliveryplus_tree_spec"
 
 
 def run(cmd: list[str], *, cwd: Path | None = None) -> None:
-    subprocess.run(cmd, cwd=cwd or ROOT, check=True)
+    # Bandit: argv list only; never shell=True; commands are developer-defined in this script.
+    subprocess.run(cmd, cwd=cwd or ROOT, check=True, shell=False)  # nosec B603
 
 
 def main() -> None:
