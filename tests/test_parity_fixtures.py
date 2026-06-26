@@ -22,6 +22,7 @@ def load_fixture(name: str) -> dict[str, Any]:
     with (FIXTURES_DIR / name).open(encoding="utf-8") as handle:
         return json.load(handle)
 
+
 VALID_FIXTURES = (
     "minimal-valid.json",
     "moderate-valid.json",
