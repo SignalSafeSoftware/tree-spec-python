@@ -50,7 +50,6 @@ def main() -> None:
     try:
         run([sys.executable, "-m", "venv", str(venv_dir)])
         pip = venv_dir / "bin" / "pip"
-        python = venv_dir / "bin" / "python"
         run([str(pip), "install", str(wheel)])
 
         for module in IMPORT_MODULES:
