@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-26
+
+### Changed
+
+- Track `uv.lock` for reproducible CI; restore `--frozen` installs in CI.
+- Exclude `scripts/*` from coverage metrics (pytest-cov and Sonar).
+
+### Fixed
+
+- CI `uv export --frozen` without a tracked lockfile.
+- Bandit subprocess findings in `scripts/smoke_package.py`.
+
 ## [0.1.0] - 2026-06-26
 
 ### Added
@@ -28,5 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [RELEASING.md](./RELEASING.md) preflight verifies `LICENSE` and MIT metadata before release.
 
-[Unreleased]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/SignalSafeSoftware/tree-spec-python/releases/tag/v0.1.1
 [0.1.0]: https://github.com/SignalSafeSoftware/tree-spec-python/releases/tag/v0.1.0
