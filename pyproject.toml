@@ -60,6 +60,7 @@ addopts = "--cov=deliveryplus_tree_spec --cov-report=term-missing --cov-fail-und
 
 [tool.coverage.run]
 source = ["deliveryplus_tree_spec"]
+omit = ["scripts/*"]
 branch = false
 
 [tool.coverage.report]
