@@ -15,6 +15,14 @@ dynamic = ["version"]
 dependencies = [
     "pydantic>=2.11.3,<3"
 ]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -27,9 +35,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/SignalSafeSoftware/tree-spec"
-Repository = "https://github.com/SignalSafeSoftware/tree-spec"
-Issues = "https://github.com/SignalSafeSoftware/tree-spec/issues"
+Homepage = "https://github.com/SignalSafeSoftware/tree-spec-python"
+Repository = "https://github.com/SignalSafeSoftware/tree-spec-python"
+Documentation = "https://github.com/SignalSafeSoftware/tree-spec-python#readme"
+Issues = "https://github.com/SignalSafeSoftware/tree-spec-python/issues"
 
 [tool.setuptools]
 packages = ["deliveryplus_tree_spec"]
