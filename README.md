@@ -134,9 +134,12 @@ uv run python -m build   # wheel/sdist smoke — full artifact tests in Batch 6
 
 See [SECURITY.md](./SECURITY.md). TreeSpec parsing is **contract validation**, not a sandbox. Validate and authorize TreeSpec JSON in your application layer before treating content as trusted.
 
+## Changelog and releases
+
+- [CHANGELOG.md](./CHANGELOG.md)
+- [RELEASING.md](./RELEASING.md)
+
 ## Related packages
 
 - [`@signalsafe/tree-spec`](https://github.com/SignalSafeSoftware/tree-spec) — TypeScript wire contract and compile/lint.
 - [`tree-spec-editor-*`](https://github.com/SignalSafeSoftware/tree-spec-editor) — authoring UI (TypeScript/React).
-
-Release process: [RELEASING.md](./RELEASING.md) when publishing.

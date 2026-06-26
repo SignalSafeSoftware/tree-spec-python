@@ -1,56 +1,73 @@
-# Releasing signalsafe-tree-spec
+# Releasing `signalsafe-tree-spec`
 
-This package (`pip install signalsafe-tree-spec`, import `deliveryplus_tree_spec`) ships as a standalone public GitHub repository and to PyPI.
+Standalone repository: [SignalSafeSoftware/tree-spec-python](https://github.com/SignalSafeSoftware/tree-spec-python).
 
-**Monorepo source of truth:** `libs/deliveryplus_tree_spec` in [DeliveryPlus](https://github.com/SignalSafeSoftware/DeliveryPlus). Sync to the public repo before each release.
+PyPI name: **`signalsafe-tree-spec`**. Import path: **`deliveryplus_tree_spec`**.
 
-## One-time setup
+## Release blocker — license
 
-### 1. Create the public GitHub repository
+**No public release while `pyproject.toml` license is `UNLICENSED` and this repo has no committed `LICENSE` file.**
 
-From the monorepo root:
+A license decision and a committed **`LICENSE`** file are required before tagging or publishing. Do not push a **`v*`** tag or run the publish job until both are resolved.
+
+## CI publish policy
+
+- **Checks and tests** run on every pull request.
+- **`scan` (Sonar)** on pull requests is **optional** — it runs only when the PR has the **`scan`** label. On **`push`** (including **`v*`** tag pushes) and **`workflow_dispatch`**, **`scan`** runs automatically.
+- **Publish does not run** from PR labels.
+- **Publish runs** when:
+  - **Manual:** GitHub Actions → **CI** → **Run workflow** on branch **`main`**, or
+  - **Tag:** push a semver tag matching `v*` (for example `vX.Y.Z`).
+- **Publish requires** successful **`checks`**, **`tests`**, and **`scan`** jobs in the same workflow run (see [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)).
+- Pushing a **`v*`** tag starts a workflow run where **`checks`**, **`tests`**, and **`scan`** run before **Publish** can proceed.
+- **GitHub Releases do not trigger publish** in the current workflow.
+- **PyPI trusted publishing** uses GitHub Environment **`pypi`** (`id-token: write` + `pypa/gh-action-pypi-publish`). npm-style provenance and npm Environment approval do not apply.
+
+## Before you release
+
+1. **Confirm license is resolved** (not `UNLICENSED`) and **`LICENSE`** is present.
+2. Bump version in [`VERSION`](./VERSION) (single line, semver).
+3. Update [CHANGELOG.md](./CHANGELOG.md) (`[Unreleased]` → new version section when tagging).
+4. Run locally:
+
+   ```bash
+   uv sync --extra dev
+   uv run pytest
+   uv run python -m build
+   uv run twine check dist/*
+   ```
+
+5. **Future required gate (not yet in CI):** install the wheel in a clean venv and smoke-test documented imports (Batch 6).
+
+## Publish
+
+1. Commit the version and changelog updates on **`main`**:
+
+   ```bash
+   git add VERSION CHANGELOG.md
+   git commit -m "Release vX.Y.Z"
+   git push origin main
+   ```
+
+2. Tag and push (recommended — triggers **Publish** when required jobs succeed):
+
+   ```bash
+   git tag vX.Y.Z
+   git push origin vX.Y.Z
+   ```
+
+   **Option B — Manual dispatch:** merge release commits to **`main`**, then GitHub → **Actions** → **CI** → **Run workflow** (branch **`main`**). Ensure [`VERSION`](./VERSION) matches the tag you intend to ship.
+
+## After publish
 
 ```bash
-bash scripts/export-standalone-python-package.sh tree-spec
-bash scripts/push-standalone-python-package.sh tree-spec --create-repo
+pip index versions signalsafe-tree-spec
 ```
 
-Remote: `https://github.com/SignalSafeSoftware/tree-spec`
+Wheel install smoke tests are planned but not yet required in CI (Batch 6).
 
-### 2. Register PyPI trusted publishing
+## One-time PyPI setup
 
-1. Reserve **`signalsafe-tree-spec`** on [pypi.org](https://pypi.org) (must match `pyproject.toml` `[project].name`).
-2. PyPI → Publishing → pending publisher: owner `SignalSafeSoftware`, repo `tree-spec`, workflow `publish.yml`, environment `pypi`.
-3. GitHub repo → Settings → Environments → create **`pypi`** (no secrets when using trusted publishing).
-
-### 3. Monorepo consumers
-
-DeliveryPlus uses a Poetry path dependency:
-
-```toml
-signalsafe-tree-spec = { path = "libs/deliveryplus_tree_spec", develop = true }
-```
-
-After a PyPI release you may pin from PyPI instead (same pattern as `sqlphilosophy`).
-
-## Release workflow
-
-1. **Develop** in `libs/deliveryplus_tree_spec` (monorepo).
-2. **Bump** version: `bash scripts/bump-python-tree-spec-version.sh patch` (or `minor` / `major`).
-3. **Test:** `make package area=python-tree-spec type=verify`
-4. **Sync** to GitHub: `bash scripts/push-standalone-python-package.sh tree-spec`
-5. **Tag** in the standalone repo and create a GitHub **Release** (triggers `publish.yml`).
-
-## Pre-release checks
-
-From this directory:
-
-```bash
-python -m pip install -e ".[dev]"
-python -m pytest -q
-python -m pip install build twine
-python -m build
-twine check dist/*
-```
-
-Or from monorepo root: `make package area=python-tree-spec type=wheel` and `make package area=python-tree-spec type=smoke`.
+1. Register **`signalsafe-tree-spec`** on PyPI (after license is resolved).
+2. Configure **trusted publishing** for this repo’s **CI** workflow, **Publish** job, environment **`pypi`**.
+3. Create GitHub Environment **`pypi`**.
