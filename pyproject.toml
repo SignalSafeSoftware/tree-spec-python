@@ -7,7 +7,8 @@ name = "signalsafe-tree-spec"
 description = "SignalSafe TreeSpec wire contract for Python: models, parsing, lint, and patch helpers."
 readme = "README.md"
 requires-python = ">=3.12,<4.0"
-license = { text = "UNLICENSED" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
     { name = "Josh Martin" }
 ]

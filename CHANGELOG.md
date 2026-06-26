@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `pyproject.toml` project URLs and classifiers (Batch 3).
 - README rewrite for standalone use (Batch 4).
+- License changed from placeholder `UNLICENSED` metadata to MIT for public package readiness.
 
 ### CI
 
@@ -23,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- Release blocker documented: **no public release while license is `UNLICENSED`**; committed **`LICENSE`** file required before tagging or publishing.
+- [RELEASING.md](./RELEASING.md) preflight verifies `LICENSE` and MIT metadata before release.
 
 ## [0.1.0]
 

@@ -10,7 +10,7 @@ Python implementation of the **TreeSpec wire contract**: Pydantic models, parsin
 | **Python** | 3.12+ (`requires-python >=3.12,<4.0`) |
 | **Runtime dependency** | Pydantic v2 (`pydantic>=2.11.3,<3`) |
 
-> **License blocker:** Package metadata is currently `UNLICENSED` and this repo has no `LICENSE` file. Do not publish until a license decision is made. See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
+> **License:** MIT — see [LICENSE](./LICENSE). See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
 
 ## What this package does
 

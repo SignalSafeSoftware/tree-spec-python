@@ -4,12 +4,6 @@ Standalone repository: [SignalSafeSoftware/tree-spec-python](https://github.com/
 
 PyPI name: **`signalsafe-tree-spec`**. Import path: **`deliveryplus_tree_spec`**.
 
-## Release blocker — license
-
-**No public release while `pyproject.toml` license is `UNLICENSED` and this repo has no committed `LICENSE` file.**
-
-A license decision and a committed **`LICENSE`** file are required before tagging or publishing. Do not push a **`v*`** tag or run the publish job until both are resolved.
-
 ## CI publish policy
 
 - **Checks and tests** run on every pull request.
@@ -25,7 +19,7 @@ A license decision and a committed **`LICENSE`** file are required before taggin
 
 ## Before you release
 
-1. **Confirm license is resolved** (not `UNLICENSED`) and **`LICENSE`** is present.
+1. **Verify `LICENSE` exists** and `pyproject.toml` declares **`license = "MIT"`** with **`license-files = ["LICENSE"]`**.
 2. Bump version in [`VERSION`](./VERSION) (single line, semver).
 3. Update [CHANGELOG.md](./CHANGELOG.md) (`[Unreleased]` → new version section when tagging).
 4. Run locally:
@@ -64,10 +58,10 @@ A license decision and a committed **`LICENSE`** file are required before taggin
 pip index versions signalsafe-tree-spec
 ```
 
-CI runs `scripts/smoke_package.py` before publish (publishing remains blocked until license is resolved).
+CI runs `scripts/smoke_package.py` before publish.
 
 ## One-time PyPI setup
 
-1. Register **`signalsafe-tree-spec`** on PyPI (after license is resolved).
+1. Register **`signalsafe-tree-spec`** on PyPI.
 2. Configure **trusted publishing** for this repo’s **CI** workflow, **Publish** job, environment **`pypi`**.
 3. Create GitHub Environment **`pypi`**.
