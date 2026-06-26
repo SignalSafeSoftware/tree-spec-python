@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-06-26
+
 ### Added
 
 - `SECURITY.md`, Dependabot, standalone README, `CHANGELOG.md`, updated [RELEASING.md](./RELEASING.md).
@@ -25,10 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation
 
 - [RELEASING.md](./RELEASING.md) preflight verifies `LICENSE` and MIT metadata before release.
-
-## [0.1.0]
-
-Prior version line in this repository. Detailed historical release notes were not recorded.
 
 [Unreleased]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/SignalSafeSoftware/tree-spec-python/releases/tag/v0.1.0
