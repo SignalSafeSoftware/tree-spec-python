@@ -20,6 +20,8 @@ Python implementation of the **TreeSpec wire contract**: Pydantic models, parsin
 - **Apply JSON patches** to wire dicts (`apply_patch_to_spec_dict`).
 - Expose wire constants (`END_NODE_ID`, `TREESPEC_WIRE_VERSION`).
 
+See [docs/compatibility.md](./docs/compatibility.md) for how **unknown JSON fields** are handled (`extra="ignore"`) and how that compares to TypeScript compile/decompile.
+
 ## What this package does not do
 
 - HTTP APIs, authentication, persistence, or training UI.

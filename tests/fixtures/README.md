@@ -32,3 +32,5 @@ fixtures.
 
 Parity tests in `tree-spec/tests/parity-fixtures.test.ts` and `tree-spec-python/tests/test_parity_fixtures.py`
 encode shared expectations and document known gaps without changing runtime behavior.
+
+Unknown-field policy: see [../../docs/compatibility.md](../../docs/compatibility.md).
