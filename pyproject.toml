@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=69", "wheel"]
+requires = ["setuptools>=82.0.1", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,13 +7,22 @@ name = "signalsafe-tree-spec"
 description = "SignalSafe TreeSpec wire contract for Python: models, parsing, lint, and patch helpers."
 readme = "README.md"
 requires-python = ">=3.12,<4.0"
-license = { text = "UNLICENSED" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
     { name = "Josh Martin" }
 ]
 dynamic = ["version"]
 dependencies = [
     "pydantic>=2.11.3,<3"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
 ]
 
 [project.optional-dependencies]
@@ -27,9 +36,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/SignalSafeSoftware/tree-spec"
-Repository = "https://github.com/SignalSafeSoftware/tree-spec"
-Issues = "https://github.com/SignalSafeSoftware/tree-spec/issues"
+Homepage = "https://github.com/SignalSafeSoftware/tree-spec-python"
+Repository = "https://github.com/SignalSafeSoftware/tree-spec-python"
+Documentation = "https://github.com/SignalSafeSoftware/tree-spec-python#readme"
+Issues = "https://github.com/SignalSafeSoftware/tree-spec-python/issues"
 
 [tool.setuptools]
 packages = ["deliveryplus_tree_spec"]
@@ -50,6 +60,7 @@ addopts = "--cov=deliveryplus_tree_spec --cov-report=term-missing --cov-fail-und
 
 [tool.coverage.run]
 source = ["deliveryplus_tree_spec"]
+omit = ["scripts/*"]
 branch = false
 
 [tool.coverage.report]
