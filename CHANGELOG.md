@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-06-28
+
+### Added
+
+- [docs/compatibility.md](./docs/compatibility.md) — unknown-field behavior vs TypeScript; Pydantic `extra="ignore"` policy.
+- Tests: `tests/test_unknown_fields.py`.
+
+### Changed
+
+- CI: pass Sonar token for package scans; pin GitHub Actions to reviewed SHAs.
+- Package smoke script: tighten sdist contents audit (required metadata files; exclude tests from sdist).
+
+### Fixed
+
+- Replace `tar` subprocess with stdlib `tarfile` in `scripts/smoke_package.py` (Bandit B607/B603).
+
 ## [0.1.1] - 2026-06-26
 
 ### Changed
@@ -43,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [RELEASING.md](./RELEASING.md) preflight verifies `LICENSE` and MIT metadata before release.
 
-[Unreleased]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/SignalSafeSoftware/tree-spec-python/releases/tag/v0.1.1
 [0.1.0]: https://github.com/SignalSafeSoftware/tree-spec-python/releases/tag/v0.1.0

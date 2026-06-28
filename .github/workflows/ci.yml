@@ -31,7 +31,7 @@ jobs:
               with:
                   python-version: ${{ matrix.python-version }}
 
-            - uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081 # v5
+            - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
               with:
                   enable-cache: true
 
@@ -64,7 +64,7 @@ jobs:
               with:
                   python-version: ${{ matrix.python-version }}
 
-            - uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081 # v5
+            - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
               with:
                   enable-cache: true
 
@@ -89,9 +89,12 @@ jobs:
         name: Scan
         needs: [tests]
         if: |
-            github.event_name == 'workflow_dispatch' ||
-            github.event_name == 'push' ||
-            (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'scan'))
+            (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+            (
+                github.event_name == 'workflow_dispatch' ||
+                github.event_name == 'push' ||
+                (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'scan'))
+            )
         runs-on: ubuntu-latest
         permissions:
             contents: read
@@ -113,7 +116,9 @@ jobs:
               run: test -f coverage.xml
 
             - name: SonarCloud scan
-              uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e
+              uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
+              env:
+                  SONAR_TOKEN: ${{ secrets.PACKAGES_SONAR_TOKEN }}
 
             - name: Sonar PR comment
               if: github.event_name == 'pull_request'
@@ -139,7 +144,7 @@ jobs:
               with:
                   python-version: "3.12"
 
-            - uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081 # v5
+            - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
               with:
                   enable-cache: true
 
@@ -163,7 +168,7 @@ jobs:
             ) &&
             needs.checks.result == 'success' &&
             needs.tests.result == 'success' &&
-            needs.scan.result == 'success'
+            (needs.scan.result == 'success' || needs.scan.result == 'skipped')
         runs-on: ubuntu-latest
         permissions:
             contents: read
@@ -176,7 +181,7 @@ jobs:
               with:
                   python-version: "3.12"
 
-            - uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081 # v5
+            - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
               with:
                   enable-cache: true
 
