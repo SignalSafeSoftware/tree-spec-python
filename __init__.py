@@ -10,6 +10,7 @@ See ``README.md`` in this package for scope, dependency rules, and cross-languag
 from deliveryplus_tree_spec.builder import TreeSpecBuilder
 from deliveryplus_tree_spec.builder import TreeSpecError
 from deliveryplus_tree_spec.constants import END_NODE_ID
+from deliveryplus_tree_spec.constants import LEGACY_END_NODE_ID
 from deliveryplus_tree_spec.constants import TREESPEC_WIRE_VERSION
 from deliveryplus_tree_spec.lint import lint_tree_spec
 from deliveryplus_tree_spec.lint import TreeSpecIssue
@@ -37,6 +38,7 @@ __all__ = [
     "END_NODE_ID",
     "FeedbackDict",
     "MicroFeedback",
+    "LEGACY_END_NODE_ID",
     "Node",
     "PatchApplyError",
     "PatchDict",

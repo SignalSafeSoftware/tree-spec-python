@@ -23,6 +23,7 @@ def test_public_all_matches_package_module() -> None:
         "Delta",
         "END_NODE_ID",
         "FeedbackDict",
+        "LEGACY_END_NODE_ID",
         "MicroFeedback",
         "Node",
         "PatchApplyError",

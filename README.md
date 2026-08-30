@@ -111,7 +111,7 @@ There are no subpath exports — import from `deliveryplus_tree_spec` only.
 - **`transitions`:** list of `{ from: [nodeId, choiceId], to, outcome? }`. Terminal transitions target `END_NODE_ID` and require `outcome`.
 - **`_meta`:** optional tree-level metadata (for example graph-editor viewport persisted by editor packages).
 
-Legacy payloads may use `options` instead of `choices` and legacy terminal ids; the TypeScript package normalizes these on compile/decompile. Python lint validates the wire shape your backend accepts.
+Legacy payloads may use `options` instead of `choices` and legacy terminal ids; both implementations normalize these to canonical `choices` and `END` on read. Python lint validates the wire shape your backend accepts.
 
 ## Python / TypeScript parity
 

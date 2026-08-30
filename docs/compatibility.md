@@ -27,7 +27,7 @@ All wire models (`TreeSpec`, `Node`, `Choice`, `Transition`, `MicroFeedback`, â€
 | **Node** | `"legacy_flag": true` on a node | Ignored | Not emitted |
 | **Node** | `"render_hints": { "editor": {}, "vendor": {} }` | Stored | Nested unknown keys **preserved** in dict |
 | **Choice** | `"tooltip": "x"` | Ignored | Not emitted |
-| **Choice** | `"render_hints": { "editor": {} }` | Ignored (no field on `Choice`) | Not emitted â€” **TS/editor difference** |
+| **Choice** | `"render_hints": { "editor": {} }` | Stored | Nested unknown keys **preserved** in dict |
 | **Choice** | `"feedback": { "title": "Hi" }` | Parsed into `MicroFeedback` | Known keys only |
 | **Transition** | `"note": "internal"` | Ignored | Not emitted |
 | **Transition** | `"feedback"`, `"delta"`, `"lessons_triggered"` | Parsed | Emitted when set |
@@ -52,7 +52,7 @@ These align with TypeScript `lintTreeSpecWire` for the overlapping rules.
 | Unknown root keys | Dropped on round-trip | Ignored on parse |
 | `_meta` extensions | Preserved | Preserved |
 | `render_hints` on nodes | Preserved (opaque) | Preserved (dict) |
-| Choice `render_hints` | Preserved | **Not modeled** (accepted difference) |
+| Choice `render_hints` | Preserved | Preserved (dict) |
 | Extra keys inside `feedback` | Preserved (opaque) | **Stripped** by `MicroFeedback` (accepted difference) |
 | Lint unknown keys | No | No |
 
@@ -60,7 +60,10 @@ These align with TypeScript `lintTreeSpecWire` for the overlapping rules.
 
 ## Examples
 
-See the TypeScript doc for JSON samples. Behavior for `_meta` and invalid `wire_version` matches the examples there.
+Legacy `options` collections are normalized to canonical `choices`, and the legacy
+`__END__` target is normalized to `END`, matching TypeScript decompile behavior.
+See the TypeScript doc for JSON samples. Behavior for `_meta` and invalid
+`wire_version` matches the examples there.
 
 ---
 

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-30
+
+### Added
+
+- Preserve choice-level `render_hints` in Python model round-trips.
+- Normalize legacy `options` collections and `__END__` targets to the canonical TypeScript wire shape.
+- Add parity tests for legacy normalization and choice presentation hints.
+
 ## [0.1.3] - 2026-08-30
 
 ### Changed
@@ -65,7 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [RELEASING.md](./RELEASING.md) preflight verifies `LICENSE` and MIT metadata before release.
 
-[Unreleased]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/SignalSafeSoftware/tree-spec-python/releases/tag/v0.1.1

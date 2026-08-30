@@ -14,6 +14,7 @@ from pydantic import Field
 from pydantic import field_validator
 from pydantic import model_validator
 from deliveryplus_tree_spec.constants import END_NODE_ID
+from deliveryplus_tree_spec.constants import LEGACY_END_NODE_ID
 from deliveryplus_tree_spec.constants import TREESPEC_WIRE_VERSION
 
 # JSON-shaped values for API helpers (avoid coupling to app-wide JSON types).
@@ -74,6 +75,7 @@ class Choice(BaseModel):
 
     id: str = Field(min_length=1, max_length=80)
     label: str = Field(min_length=1, max_length=200)
+    render_hints: Optional[Dict[str, object]] = None
     feedback: Optional[MicroFeedback] = None
 
 
@@ -84,6 +86,22 @@ class Node(BaseModel):
     prompt: str = Field(default="")
     render_hints: Dict[str, object] = Field(default_factory=dict)
     choices: List[Choice] = Field(default_factory=list)
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_legacy_options(cls, value: object) -> object:
+        """Normalize TypeScript's legacy ``options`` collection to ``choices``."""
+
+        if not isinstance(value, dict):
+            return value
+
+        normalized = dict(value)
+        choices = normalized.get("choices")
+        options = normalized.get("options")
+        if not choices and options is not None:
+            normalized["choices"] = options
+        normalized.pop("options", None)
+        return normalized
 
     def to_api(self, node_id: str) -> JSONObject:
         """Convert Node to API response format."""
@@ -108,6 +126,13 @@ class Transition(BaseModel):
     delta: Delta = Field(default_factory=Delta)
     feedback: Optional[MicroFeedback] = None
     lessons_triggered: Optional[List[str]] = None
+
+    @field_validator("to", mode="before")
+    @classmethod
+    def normalize_legacy_end_node(cls, value: object) -> object:
+        """Normalize the legacy synthetic terminal id used by older TS exports."""
+
+        return END_NODE_ID if value == LEGACY_END_NODE_ID else value
 
     @model_validator(mode="after")
     def validate_end_outcome(self) -> "Transition":

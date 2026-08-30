@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
+import pytest
+from pydantic import ValidationError
+
 from deliveryplus_tree_spec import END_NODE_ID
+from deliveryplus_tree_spec import LEGACY_END_NODE_ID
+from deliveryplus_tree_spec.models import Node
 from deliveryplus_tree_spec.models import TreeSpec
 
 
@@ -65,10 +70,20 @@ def test_parse_ignores_unknown_node_and_choice_keys() -> None:
     node = dumped["nodes"]["s"]
     assert "legacy_flag" not in node
     choice = node["choices"][0]
-    assert choice == {"id": "c1", "label": "Go", "feedback": None}
+    assert choice == {
+        "id": "c1",
+        "label": "Go",
+        "render_hints": None,
+        "feedback": None,
+    }
 
 
-def test_choice_render_hints_not_modeled_accepted_difference() -> None:
+def test_node_rejects_non_mapping_input() -> None:
+    with pytest.raises(ValidationError):
+        Node.model_validate([])
+
+
+def test_choice_render_hints_are_preserved_for_ts_parity() -> None:
     raw = {
         "start_node": "s",
         "nodes": {
@@ -89,7 +104,41 @@ def test_choice_render_hints_not_modeled_accepted_difference() -> None:
     spec = TreeSpec.model_validate(raw)
     dumped = spec.model_dump(by_alias=True)
     choice = dumped["nodes"]["s"]["choices"][0]
-    assert "render_hints" not in choice
+    assert choice["render_hints"] == {"editor": {"strokeColor": "#000"}}
+
+
+def test_legacy_options_are_normalized_to_choices() -> None:
+    node = Node.model_validate(
+        {
+            "type": "prompt",
+            "prompt": "Hi",
+            "options": [{"id": "c1", "label": "Go"}],
+        }
+    )
+
+    assert [choice.id for choice in node.choices] == ["c1"]
+    assert "options" not in node.model_dump()
+
+
+def test_legacy_end_node_is_normalized() -> None:
+    raw = {
+        "start_node": "s",
+        "nodes": {
+            "s": {
+                "type": "prompt",
+                "prompt": "Hi",
+                "options": [{"id": "c1", "label": "Go"}],
+            }
+        },
+        "transitions": [
+            {"from": ["s", "c1"], "to": LEGACY_END_NODE_ID, "outcome": "safe"}
+        ],
+    }
+
+    spec = TreeSpec.model_validate(raw)
+
+    assert spec.transitions[0].to == END_NODE_ID
+    assert spec.nodes["s"].choices[0].id == "c1"
 
 
 def test_parse_ignores_unknown_transition_key() -> None:
