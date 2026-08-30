@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-08-30
+
+### Changed
+
+- Updated CI actions and locked development tooling for the maintained release workflow.
+
 ## [0.1.2] - 2026-06-28
 
 ### Added
@@ -59,7 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [RELEASING.md](./RELEASING.md) preflight verifies `LICENSE` and MIT metadata before release.
 
-[Unreleased]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/SignalSafeSoftware/tree-spec-python/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/SignalSafeSoftware/tree-spec-python/releases/tag/v0.1.1
 [0.1.0]: https://github.com/SignalSafeSoftware/tree-spec-python/releases/tag/v0.1.0
