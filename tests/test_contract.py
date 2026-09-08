@@ -48,7 +48,7 @@ def test_lint_reports_missing_transition() -> None:
     }
     builder = TreeSpecBuilder.from_raw(raw)
     issues = lint_tree_spec(builder)
-    assert any(i.code == "missing_transition" for i in issues)
+    assert any(i.code == "missing_choice_transition" for i in issues)
 
 
 def test_get_ab_meta_from_invalid_spec_returns_empty_model() -> None:

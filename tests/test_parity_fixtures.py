@@ -99,14 +99,14 @@ def test_lint_missing_target_node_code() -> None:
     raw = load_fixture("invalid-missing-target.json")
     issues = lint_tree_spec(TreeSpecBuilder.from_raw(raw))
     codes = [issue.code for issue in issues]
-    assert "missing_target_node" in codes
+    assert "transition_target_not_found" in codes
 
 
 def test_lint_missing_transition_code() -> None:
     raw = load_fixture("invalid-missing-transition.json")
     issues = lint_tree_spec(TreeSpecBuilder.from_raw(raw))
     codes = [issue.code for issue in issues]
-    assert "missing_transition" in codes
+    assert "missing_choice_transition" in codes
 
 
 def test_lint_unreachable_node_code() -> None:
@@ -120,4 +120,4 @@ def test_lint_duplicate_transition_code() -> None:
     raw = load_fixture("invalid-duplicate-transition.json")
     issues = lint_tree_spec(TreeSpecBuilder.from_raw(raw))
     codes = [issue.code for issue in issues]
-    assert "duplicate_transition" in codes
+    assert "duplicate_transition_source" in codes

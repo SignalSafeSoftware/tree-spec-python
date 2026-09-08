@@ -8,47 +8,57 @@ from deliveryplus_tree_spec.constants import END_NODE_ID
 
 @dataclass(frozen=True)
 class TreeSpecIssue:
-    level: str  # "error" | "warning"
+    level: str  # "error" | "warning"; maps to TypeScript's `severity`
     code: str
     message: str
     node_id: Optional[str] = None
     choice_id: Optional[str] = None
+    path: Optional[tuple[str | int, ...]] = None
+
+    @property
+    def severity(self) -> str:
+        """Return the cross-language severity name used by the TypeScript contract."""
+
+        return self.level
 
 
-def _find_duplicate_transition_keys(builder: TreeSpecBuilder) -> list[tuple[str, str]]:
-    seen: set[tuple[str, str]] = set()
-    dupes: set[tuple[str, str]] = set()
-    for transition in builder.spec.transitions:
-        key = (transition.from_[0], transition.from_[1])
-        if key in seen:
-            dupes.add(key)
-        else:
-            seen.add(key)
-    return sorted(dupes)
+def _tree_path(*parts: str | int) -> tuple[str | int, ...]:
+    return ("tree_spec", *parts)
 
 
-def _build_duplicate_transition_issues(
-    duplicate_keys: list[tuple[str, str]],
-) -> list[TreeSpecIssue]:
-    return [
-        TreeSpecIssue(
-            level="error",
-            code="duplicate_transition",
-            message=(
-                f"Duplicate transition for ({from_node}, {choice_id}). Each choice must have exactly one transition."
-            ),
-            node_id=from_node,
-            choice_id=choice_id,
-        )
-        for from_node, choice_id in duplicate_keys
-    ]
+def _build_node_issues(builder: TreeSpecBuilder) -> list[TreeSpecIssue]:
+    issues: list[TreeSpecIssue] = []
+    for node_id, node in builder.spec.nodes.items():
+        node_path = _tree_path("nodes", node_id)
+        if not node.choices:
+            issues.append(
+                TreeSpecIssue(
+                    level="error",
+                    code="node_without_choices",
+                    message=f"Node '{node_id}' must define at least one choice.",
+                    node_id=node_id,
+                    path=node_path,
+                )
+            )
+        seen: set[str] = set()
+        for choice_index, choice in enumerate(node.choices):
+            if choice.id in seen:
+                issues.append(
+                    TreeSpecIssue(
+                        level="error",
+                        code="duplicate_choice_id",
+                        message=f"Choice ID '{choice.id}' is duplicated on node '{node_id}'.",
+                        node_id=node_id,
+                        choice_id=choice.id,
+                        path=_tree_path("nodes", node_id, "choices", choice_index, "id"),
+                    )
+                )
+            seen.add(choice.id)
+    return issues
 
 
 def _build_transition_map(builder: TreeSpecBuilder) -> dict[tuple[str, str], str]:
-    return {
-        (transition.from_[0], transition.from_[1]): transition.to
-        for transition in builder.spec.transitions
-    }
+    return {(transition.from_[0], transition.from_[1]): transition.to for transition in builder.spec.transitions}
 
 
 def _find_missing_transition_issues(
@@ -57,36 +67,77 @@ def _find_missing_transition_issues(
 ) -> list[TreeSpecIssue]:
     issues: list[TreeSpecIssue] = []
     for node_id, node in builder.spec.nodes.items():
-        for choice in node.choices:
+        for choice_index, choice in enumerate(node.choices):
             if (node_id, choice.id) in trans_map:
                 continue
             issues.append(
                 TreeSpecIssue(
                     level="error",
-                    code="missing_transition",
+                    code="missing_choice_transition",
                     message=f"Missing transition for choice '{choice.id}' on node '{node_id}'.",
                     node_id=node_id,
                     choice_id=choice.id,
+                    path=_tree_path("nodes", node_id, "choices", choice_index),
                 )
             )
     return issues
 
 
-def _find_missing_target_node_issues(
+def _find_transition_issues(
     builder: TreeSpecBuilder,
     trans_map: dict[tuple[str, str], str],
 ) -> list[TreeSpecIssue]:
     issues: list[TreeSpecIssue] = []
-    for (from_node, choice_id), to_node in trans_map.items():
-        if to_node == END_NODE_ID or to_node in builder.spec.nodes:
+    seen: set[tuple[str, str]] = set()
+    for index, transition in enumerate(builder.spec.transitions):
+        from_node, choice_id = transition.from_
+        path = _tree_path("transitions", index)
+        key = (from_node, choice_id)
+        if key in seen:
+            issues.append(
+                TreeSpecIssue(
+                    level="error",
+                    code="duplicate_transition_source",
+                    message=f"Choice '{choice_id}' on node '{from_node}' has more than one transition.",
+                    node_id=from_node,
+                    choice_id=choice_id,
+                    path=(*path, "from"),
+                )
+            )
+        seen.add(key)
+        node = builder.spec.nodes.get(from_node)
+        if node is None:
+            issues.append(
+                TreeSpecIssue(
+                    level="error",
+                    code="transition_node_not_found",
+                    message=f"Transition references unknown source node '{from_node}'.",
+                    node_id=from_node,
+                    choice_id=choice_id,
+                    path=(*path, "from", 0),
+                )
+            )
+        elif not any(choice.id == choice_id for choice in node.choices):
+            issues.append(
+                TreeSpecIssue(
+                    level="error",
+                    code="transition_choice_not_found",
+                    message=f"Transition references unknown choice '{choice_id}' on node '{from_node}'.",
+                    node_id=from_node,
+                    choice_id=choice_id,
+                    path=(*path, "from", 1),
+                )
+            )
+        if transition.to == END_NODE_ID or transition.to in builder.spec.nodes:
             continue
         issues.append(
             TreeSpecIssue(
                 level="error",
-                code="missing_target_node",
-                message=f"Transition ({from_node}, {choice_id}) points to missing node '{to_node}'.",
+                code="transition_target_not_found",
+                message=f"Transition target '{transition.to}' is not present in tree_spec.nodes.",
                 node_id=from_node,
                 choice_id=choice_id,
+                path=(*path, "to"),
             )
         )
     return issues
@@ -125,9 +176,44 @@ def _find_unreachable_node_issues(
             code="unreachable_node",
             message=f"Node '{node_id}' is unreachable from start node '{start_node_id}'.",
             node_id=node_id,
+            path=_tree_path("nodes", node_id),
         )
         for node_id in builder.spec.nodes.keys()
         if node_id not in reachable
+    ]
+
+
+def _find_no_terminal_path_issues(
+    builder: TreeSpecBuilder,
+    reachable: set[str],
+    trans_map: dict[tuple[str, str], str],
+) -> list[TreeSpecIssue]:
+    reverse: dict[str, set[str]] = {}
+    for (from_node, _choice_id), to_node in trans_map.items():
+        if to_node == END_NODE_ID:
+            reverse.setdefault(END_NODE_ID, set()).add(from_node)
+        elif to_node in builder.spec.nodes:
+            reverse.setdefault(to_node, set()).add(from_node)
+
+    can_reach_end: set[str] = set()
+    pending = list(reverse.get(END_NODE_ID, set()))
+    while pending:
+        node_id = pending.pop()
+        if node_id in can_reach_end:
+            continue
+        can_reach_end.add(node_id)
+        pending.extend(reverse.get(node_id, set()))
+
+    return [
+        TreeSpecIssue(
+            level="error",
+            code="no_terminal_path",
+            message=f"Node '{node_id}' has no path to END.",
+            node_id=node_id,
+            path=_tree_path("nodes", node_id),
+        )
+        for node_id in sorted(reachable)
+        if node_id not in can_reach_end
     ]
 
 
@@ -145,13 +231,23 @@ def lint_tree_spec(builder: TreeSpecBuilder) -> List[TreeSpecIssue]:
     - publish gating
     """
 
-    duplicate_keys = _find_duplicate_transition_keys(builder)
     trans_map = _build_transition_map(builder)
     reachable = _collect_reachable_nodes(builder, trans_map)
+    issues: list[TreeSpecIssue] = []
+    if builder.get_start_node_id() not in builder.spec.nodes:
+        issues.append(
+            TreeSpecIssue(
+                level="error",
+                code="start_node_not_found",
+                message=f"Start node '{builder.get_start_node_id()}' is not present in tree_spec.nodes.",
+                node_id=builder.get_start_node_id(),
+                path=_tree_path("start_node"),
+            )
+        )
 
-    return [
-        *_build_duplicate_transition_issues(duplicate_keys),
-        *_find_missing_transition_issues(builder, trans_map),
-        *_find_missing_target_node_issues(builder, trans_map),
-        *_find_unreachable_node_issues(builder, reachable),
-    ]
+    issues.extend(_build_node_issues(builder))
+    issues.extend(_find_transition_issues(builder, trans_map))
+    issues.extend(_find_missing_transition_issues(builder, trans_map))
+    issues.extend(_find_unreachable_node_issues(builder, reachable))
+    issues.extend(_find_no_terminal_path_issues(builder, reachable, trans_map))
+    return issues

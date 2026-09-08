@@ -15,7 +15,9 @@ Python implementation of the **TreeSpec wire contract**: Pydantic models, parsin
 ## What this package does
 
 - Validate and parse **TreeSpec wire JSON** into typed Pydantic models (`TreeSpec`, `Node`, `Transition`, …).
-- **Lint** wire payloads (`lint_tree_spec`) with structured issues.
+- **Lint** wire payloads (`lint_tree_spec`) with structured issues, including
+  duplicate choices, invalid references, unreachable nodes, and reachable paths
+  that cannot reach `END`.
 - **Build** wire documents programmatically (`TreeSpecBuilder`).
 - **Apply JSON patches** to wire dicts (`apply_patch_to_spec_dict`).
 - Expose wire constants (`END_NODE_ID`, `TREESPEC_WIRE_VERSION`).
@@ -97,7 +99,7 @@ All symbols below are exported from the top-level `deliveryplus_tree_spec` packa
 |---|---|
 | Constants | `END_NODE_ID`, `TREESPEC_WIRE_VERSION` |
 | Models | `TreeSpec`, `Node`, `Transition`, `Choice`, `Delta`, `MicroFeedback`, `ABMeta`, `ABVariant`, … |
-| Lint | `lint_tree_spec`, `TreeSpecIssue` |
+| Lint | `lint_tree_spec`, `TreeSpecIssue` (`level`/`severity`, stable `code`, optional `path`) |
 | Builder | `TreeSpecBuilder`, `TreeSpecError` |
 | Patch | `apply_patch_to_spec_dict`, `PatchApplyError`, `PatchDict`, `ReplacePatch`, … |
 
@@ -117,11 +119,15 @@ Legacy payloads may use `options` instead of `choices` and legacy terminal ids; 
 
 | Concern | Python (`tree-spec-python`) | TypeScript (`@signalsafe/tree-spec`) |
 |---|---|---|
-| Wire models & lint | Pydantic models, `lint_tree_spec` | `TreeSpecWire`, `lintTreeSpecWire` |
+| Wire models & lint | Pydantic models, `lint_tree_spec` | `TreeSpecWire`, `lintTreeSpecWire`, `lintTreeSpecGraph` |
 | Authoring graph compile | — | `compileTreeSpec` / `decompileTreeSpec` |
 | Cross-language fixtures | Share JSON fixtures in your product repo or CI | Same |
 
-Keep fixture JSON in sync when changing wire rules in either language. Full compile/decompile parity lives in TypeScript today; Python focuses on validation, lint, builder, and patch flows used by backends.
+Keep fixture JSON in sync when changing wire rules in either language. Graph
+diagnostics use the same canonical codes and JSON-like paths in both languages;
+Python exposes the legacy `level` field and the equivalent read-only `severity`
+property. Full compile/decompile parity lives in TypeScript today; Python
+focuses on validation, lint, builder, and patch flows used by backends.
 
 ## Development
 

@@ -21,16 +21,19 @@ fixtures.
 
 ## Invalid — transitions / graph
 
-| File | Python | TypeScript (`lintTreeSpecWire`) |
+| File | Python (`lint_tree_spec`) | TypeScript (`lintTreeSpecGraph`) |
 |------|--------|----------------------------------|
-| `invalid-end-without-outcome.json` | Parse error | Lint: missing END outcome |
-| `invalid-non-end-outcome.json` | Parse error | **Gap:** lint passes today |
-| `invalid-missing-target.json` | Lint: `missing_target_node` | **Gap:** lint passes today |
-| `invalid-missing-transition.json` | Lint: `missing_transition` | **Gap:** lint passes today |
-| `invalid-unreachable-node.json` | Lint: `unreachable_node` | **Gap:** lint passes today |
-| `invalid-duplicate-transition.json` | Lint: `duplicate_transition` | **Gap:** lint passes today |
+| `invalid-end-without-outcome.json` | Parse error | Strict parse: missing END outcome |
+| `invalid-non-end-outcome.json` | Parse error | Strict parse: `unexpected_nonterminal_outcome` |
+| `invalid-missing-target.json` | Lint: `transition_target_not_found` | Graph lint: `transition_target_not_found` |
+| `invalid-missing-transition.json` | Lint: `missing_choice_transition` | Graph lint: `missing_choice_transition` |
+| `invalid-unreachable-node.json` | Lint: `unreachable_node` | Graph lint: `unreachable_node` |
+| `invalid-duplicate-transition.json` | Lint: `duplicate_transition_source` | Graph lint: `duplicate_transition_source` |
 
-Parity tests in `tree-spec/tests/parity-fixtures.test.ts` and `tree-spec-python/tests/test_parity_fixtures.py`
-encode shared expectations and document known gaps without changing runtime behavior.
+Parity tests in `tree-spec/tests/parity-fixtures.test.ts` and
+`tree-spec-python/tests/test_parity_fixtures.py` encode the shared wire
+expectations. Strict TypeScript decoding and Python model parsing retain their
+documented difference in unknown-field handling; graph diagnostics use the same
+canonical issue codes and map Python `level` to TypeScript `severity`.
 
 Unknown-field policy: see [../../docs/compatibility.md](../../docs/compatibility.md).

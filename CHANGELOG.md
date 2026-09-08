@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+No unreleased changes recorded.
+
+## [0.3.0] - 2026-09-08
+
+### Added
+
+- Stable graph diagnostics for duplicate choice IDs and reachable nodes that
+  cannot reach `END`, including diagnostic locations.
+
+### Changed
+
+- Align graph diagnostic codes and locations with the TypeScript TreeSpec
+  contract, while retaining the `level` field and exposing equivalent
+  `severity` terminology for cross-language consumers.
+
 ## [0.2.0] - 2026-08-30
 
 ### Added

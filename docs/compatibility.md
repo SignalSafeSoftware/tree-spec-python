@@ -9,10 +9,17 @@ This document describes how **unknown JSON fields** are handled in **`signalsafe
 | **Stable contract** | Only documented wire keys are guaranteed across tools and languages. |
 | **Extension / product metadata** | Prefer `_meta` (and documented namespaces such as `_meta.graph_editor`). |
 | **Parse** | Pydantic models use `model_config = ConfigDict(extra="ignore")` — unknown keys are **silently dropped**, not rejected. |
-| **Lint** | `lint_tree_spec` does not warn on unknown keys. |
+| **Lint** | `lint_tree_spec` does not warn on unknown keys; graph diagnostics use the canonical stable codes and optional paths shared with TypeScript. |
 | **Serialization** | `model_dump(by_alias=True)` emits only modeled fields plus preserved dict buckets. |
 
 TypeScript details: [`tree-spec/docs/compatibility.md`](https://github.com/SignalSafeSoftware/tree-spec/blob/main/docs/compatibility.md).
+
+Graph issue codes are shared with TypeScript (`duplicate_choice_id`,
+`duplicate_transition_source`, `transition_node_not_found`,
+`transition_choice_not_found`, `transition_target_not_found`,
+`missing_choice_transition`, `unreachable_node`, and `no_terminal_path`).
+Python keeps the historical `TreeSpecIssue.level` field and exposes the same
+value through the read-only `severity` property.
 
 ---
 
@@ -41,7 +48,9 @@ Invalid **known** fields still fail parse, for example:
 - END transition without `outcome`
 - Non-END transition with `outcome`
 
-These align with TypeScript `lintTreeSpecWire` for the overlapping rules.
+These align with TypeScript `parseTreeSpecWire` and `lintTreeSpecGraph` for the
+overlapping rules. Python's Pydantic parser raises `ValidationError`, while the
+TypeScript decoder returns a discriminated validation result.
 
 ---
 
