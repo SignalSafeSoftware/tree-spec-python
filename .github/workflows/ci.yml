@@ -88,13 +88,8 @@ jobs:
     scan:
         name: Scan
         needs: [tests]
-        if: |
-            (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
-            (
-                github.event_name == 'workflow_dispatch' ||
-                github.event_name == 'push' ||
-                (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'scan'))
-            )
+        # User excluded this legacy project from Sonar; retain all other quality gates.
+        if: false
         runs-on: ubuntu-latest
         permissions:
             contents: read
